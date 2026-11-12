@@ -2,9 +2,17 @@ local Widget = require "widgets/widget"
 local Image = require "widgets/image"
 local Text = require "widgets/text"
 
-local WIDTH = 660
+local WIDTH = 1400
 local HEIGHT = 14
-local SEGMENTS = 33
+local COLORS = {
+    { .75, .12, .12 },
+    { .9, .25, .12 },
+    { .95, .43, .12 },
+    { .93, .65, .14 },
+    { .77, .74, .18 },
+    { .50, .70, .22 },
+    { .23, .65, .28 },
+}
 
 local AgeBar = Class(Widget, function(self, owner, inventory)
     Widget._ctor(self, "WandaAgeBar")
@@ -16,18 +24,18 @@ local AgeBar = Class(Widget, function(self, owner, inventory)
     background:SetSize(WIDTH + 8, HEIGHT + 8)
     background:SetTint(.04, .04, .04, .88)
     self.segments = {}
-    for i = 1, SEGMENTS do
-        local t = (i - .5) / SEGMENTS
+    for i, color in ipairs(COLORS) do
+        local t = (i - .5) / #COLORS
         local segment = self:AddChild(Image("images/ui.xml", "white.tex"))
-        segment:SetSize(WIDTH / SEGMENTS + .5, HEIGHT)
+        segment:SetSize(WIDTH / #COLORS + .5, HEIGHT)
         segment:SetPosition(-WIDTH / 2 + WIDTH * t, 0)
-        segment:SetTint(1 - .55 * t, .20 + .53 * t, .14 + .18 * t, .9)
+        segment:SetTint(color[1], color[2], color[3], .9)
         self.segments[i] = segment
     end
     self.marker = self:AddChild(Image("images/ui.xml", "white.tex"))
     self.marker:SetSize(5, HEIGHT + 16)
     self.marker:SetTint(1, 1, 1, 1)
-    self.age = self:AddChild(Text(NUMBERFONT, 27))
+    self.age = self:AddChild(Text(NUMBERFONT, 34))
     self.age:SetPosition(0, 26)
     self.age:SetColour(1, 1, 1, 1)
     self:StartUpdating()
