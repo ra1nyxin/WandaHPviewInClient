@@ -2,7 +2,7 @@ local Widget = require "widgets/widget"
 local Image = require "widgets/image"
 local Text = require "widgets/text"
 
-local WIDTH = 1400
+local WIDTH = 1450
 local HEIGHT = 14
 local COLORS = {
     { .75, .12, .12 },
@@ -50,6 +50,17 @@ function AgeBar:OnUpdate()
     end
     self:Show()
     local percent = math.max(0, math.min(1, health:GetPercent()))
+    local segment_width = WIDTH / #COLORS
+    for i, segment in ipairs(self.segments) do
+        local filled = math.max(0, math.min(segment_width, WIDTH * percent - (i - 1) * segment_width))
+        if filled > 0 then
+            segment:SetSize(filled, HEIGHT)
+            segment:SetPosition(-WIDTH / 2 + (i - 1) * segment_width + filled / 2, 0)
+            segment:Show()
+        else
+            segment:Hide()
+        end
+    end
     self.marker:SetPosition(-WIDTH / 2 + WIDTH * percent, 0)
     local tuning = TUNING
     local years = tuning.WANDA_MIN_YEARS_OLD + (1 - percent) * (tuning.WANDA_MAX_YEARS_OLD - tuning.WANDA_MIN_YEARS_OLD)
